@@ -30,9 +30,9 @@
         .cell {
             width: 20%; /* Adjust cell size proportionally */
             height: 20%; /* Adjust cell size proportionally */
-            float: left;
-            border: 1px solid #ccc;
+            /* Remove border to eliminate grid lines */
             box-sizing: border-box;
+            /* No border or background for cells */
         }
         .object, .key, .special, .rs {
             position: absolute;
@@ -84,7 +84,7 @@
             const board = document.getElementById('game-board');
             board.innerHTML = ''; // Clear previous board
 
-            // Create cells
+            // Create cells without borders
             for (let y = 0; y < GRID_SIZE_Y; y++) {
                 for (let x = 0; x < GRID_SIZE_X; x++) {
                     const cell = document.createElement('div');
