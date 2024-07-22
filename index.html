@@ -18,18 +18,18 @@
         }
         #game-board {
             position: relative;
-            width: 80vw; /* 80% of viewport width */
-            height: 80vw; /* 80% of viewport width to maintain a square aspect ratio */
-            max-width: 600px; /* Maximum width of the board */
-            max-height: 600px; /* Maximum height of the board */
+            width: 53.33vw; /* 2/3 of 80vw */
+            height: 53.33vw; /* 2/3 of 80vw */
+            max-width: 400px; /* 2/3 of 600px */
+            max-height: 400px; /* 2/3 of 600px */
             border: 2px solid black;
             background-color: #eee;
             box-sizing: border-box; /* Include border and padding in the element's total width and height */
             overflow: hidden; /* Prevent scrollbars inside the board */
         }
         .cell {
-            width: 100px;
-            height: 100px;
+            width: 66.67px; /* 2/3 of 100px */
+            height: 66.67px; /* 2/3 of 100px */
             float: left;
             border: 1px solid #ccc;
             box-sizing: border-box;
@@ -59,7 +59,7 @@
         // Game variables
         const GRID_SIZE_X = 6;
         const GRID_SIZE_Y = 6;
-        const CELL_SIZE = 100;
+        const CELL_SIZE = 66.67; // 2/3 of 100px
 
         let objects = [
             { id: 'object1', type: 'object', x: 1, y: 3, width: 1, height: 3, imageUrl: 'images/Rb.png', move: 'vertical' },
