@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game</title>
+    <style>
+        #game-board {
+            position: relative;
+            width: 600px;
+            height: 600px;
+            border: 1px solid black;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .cell {
+            width: 100px;
+            height: 100px;
+            box-sizing: border-box;
+            border: 1px solid lightgray;
+        }
+        .object, .special, .key, .rs {
+            position: absolute;
+            background-size: cover;
+            cursor: grab;
+        }
+        #message-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: white;
+            border: 2px solid black;
+            z-index: 1000;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div id="game-board"></div>
+    <script>
+        const GRID_SIZE_X = 6;
+        const GRID_SIZE_Y = 6;
+        const CELL_SIZE = 100;
+
+        const initialObjects = [
+            { id: 'object1', type: 'object', x: 1, y: 3, width: 1, height: 3, imageUrl: 'images/Rb.png', move: 'vertical' },
+            { id: 'object2', type: 'object', x: 3, y: 2, width: 1, height: 3, imageUrl: 'images/Rb.png', move: 'vertical' },
+            { id: 'specialObject1', type: 'special', x: 1, y: 0, width: 2, height: 1, imageUrl: 'images/Gs.png', move: 'horizontal' },
+            { id: 'specialObject2', type: 'special', x: 4, y: 0, width: 2, height: 1, imageUrl: 'images/Gs.png', move: 'horizontal' },
+            { id: 'specialObject3', type: 'special', x: 3, y: 1, width: 2, height: 1, imageUrl: 'images/Gs.png', move: 'horizontal' },
+            { id: 'specialObject4', type: 'special', x: 4, y: 3, width: 2, height: 1, imageUrl: 'images/Gs.png', move: 'horizontal' },
+            { id: 'specialObject5', type: 'special', x: 2, y: 5, width: 2, height: 1, imageUrl: 'images/Gs.png', move: 'horizontal' },
+            { id: 'keyObject', type: 'key', x: 0, y: 2, width: 2, height: 1, imageUrl: 'images/Key.png', move: 'horizontal' },
+            { id: 'rsObject1', type: 'rs', x: 0, y: 0, width: 1, height: 2, imageUrl: 'images/Rs.png', move: 'vertical' },
+            { id: 'rsObject2', type: 'rs', x: 2, y: 1, width: 1, height: 2, imageUrl: 'images/Rs.png', move: 'vertical' },
+            { id: 'rsObject3', type: 'rs', x: 5, y: 1, width: 1, height: 2, imageUrl: 'images/Rs.png', move: 'vertical' },
+            { id: 'rsObject4', type: 'rs', x: 4, y: 4, width: 1, height: 2, imageUrl: 'images/Rs.png', move: 'vertical' }
+        ];
+
+        let objects = JSON.parse(JSON.stringify(initialObjects)); // Clone initialObjects
+
+        let isDragging = false;
+        let dragStartX, dragStartY, initialX, initialY, draggedObject;
+
+        function createBoard() {
+            const board = document.getElementById('game-board');
+            board.innerHTML = ''; // Clear previous board
+
+            // Create cells
+            const fragment = document.createDocumentFragment();
+            for (let y = 0; y < GRID_SIZE_Y; y++) {
+                for (let x = 0; x < GRID_SIZE_X; x++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    fragment.appendChild(cell);
+                }
+            }
+            board.appendChild(fragment);
+
+            // Create and place the objects
+            objects.forEach(obj => placeObject(obj));
+        }
+
+        function placeObject(obj) {
+            const element = document.createElement('div');
+            element.id = obj.id;
+            element.className = obj.type;
+            element.style.left = `${obj.x * CELL_SIZE}px`;
+            element.style.top = `${obj.y * CELL_SIZE}px`;
+            element.style.width = `${obj.width * CELL_SIZE}px`;
+            element.style.height = `${obj.height * CELL_SIZE}px`;
+            element.style.backgroundImage = `url('${obj.imageUrl}')`;
+            element.style.backgroundSize = 'cover';
+            element.style.position = 'absolute';
+            element.style.cursor = 'grab';
+
+            element.addEventListener('mousedown', onMouseDown);
+            document.getElementById('game-board').appendChild(element);
+        }
+
+        document.addEventListener('mouseup', onMouseUp);
+        document.addEventListener('mousemove', onMouseMove);
+
+        function onMouseDown(e) {
+            const targetClass = e.target.className;
+            if (['object', 'key', 'special', 'rs'].includes(targetClass)) {
+                isDragging = true;
+                dragStartX = e.clientX;
+                dragStartY = e.clientY;
+                draggedObject = objects.find(obj => obj.id === e.target.id);
+                initialX = draggedObject.x;
+                initialY = draggedObject.y;
+                e.target.style.cursor = 'grabbing';
+            }
+        }
+
+        function onMouseUp(e) {
+            if (isDragging) {
+                isDragging = false;
+                e.target.style.cursor = 'grab';
+            }
+        }
+
+        function onMouseMove(e) {
+            if (isDragging) {
+                e.preventDefault();
+
+                const deltaX = e.clientX - dragStartX;
+                const deltaY = e.clientY - dragStartY;
+
+                const moveX = Math.round(deltaX / CELL_SIZE);
+                const moveY = Math.round(deltaY / CELL_SIZE);
+
+                let newX = initialX;
+                let newY = initialY;
+
+                if (draggedObject.move === 'horizontal') {
+                    newX = Math.min(Math.max(initialX + moveX, 0), GRID_SIZE_X - draggedObject.width);
+                } else if (draggedObject.move === 'vertical') {
+                    newY = Math.min(Math.max(initialY + moveY, 0), GRID_SIZE_Y - draggedObject.height);
+                }
+
+                if (!isCollision(newY, newX, draggedObject.width, draggedObject.height)) {
+                    draggedObject.x = newX;
+                    draggedObject.y = newY;
+                    updateObjectPosition(draggedObject);
+
+                    // Check if the key object has touched the right border
+                    if (draggedObject.type === 'key' && newX + draggedObject.width >= GRID_SIZE_X) {
+                        showMessage();
+                    }
+                }
+            }
+        }
+
+        function isCollision(y, x, width, height) {
+            return objects.some(obj =>
+                obj !== draggedObject &&
+                x < obj.x + obj.width &&
+                x + width > obj.x &&
+                y < obj.y + obj.height &&
+                y + height > obj.y
+            );
+        }
+
+        function updateObjectPosition(obj) {
+            const element = document.getElementById(obj.id);
+            if (element) {
+                element.style.left = `${obj.x * CELL_SIZE}px`;
+                element.style.top = `${obj.y * CELL_SIZE}px`;
+            }
+        }
+
+        function showMessage() {
+            console.log('showMessage called');
+            const messageBox = document.createElement('div');
+            messageBox.id = 'message-box';
+            messageBox.style.position = 'fixed';
+            messageBox.style.top = '50%';
+            messageBox.style.left = '50%';
+            messageBox.style.transform = 'translate(-50%, -50%)';
+            messageBox.style.padding = '20px';
+            messageBox.style.backgroundColor = 'white';
+            messageBox.style.border = '2px solid black';
+            messageBox.style.zIndex = 1000;
+            messageBox.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+
+            const messageText = document.createElement('p');
+            messageText.textContent = 'Good Job!';
+            messageBox.appendChild(messageText);
+
+            const okButton = document.createElement('button');
+            okButton.id = 'ok-button'; // Ensure this matches
+            okButton.textContent = 'OK';
+            okButton.onclick = () => {
+                console.log('OK button clicked');
+                window.location.reload(); // Reload the page
+            };
+            messageBox.appendChild(okButton);
+
+            document.body.appendChild(messageBox);
+        }
+
+        createBoard();
+    </script>
+</body>
+</html>
