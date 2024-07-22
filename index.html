@@ -9,14 +9,22 @@
         body {
             margin: 0;
             font-family: Arial, sans-serif;
+            overflow: hidden; /* Prevent scrollbars if necessary */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Full viewport height */
+            background-color: #f0f0f0; /* Optional background color */
         }
         #game-board {
             position: relative;
-            width: 600px; /* 6 cells * 100px */
-            height: 600px; /* 6 cells * 100px */
-            margin: 0 auto;
+            width: 100vw; /* Full viewport width */
+            height: 100vh; /* Full viewport height */
+            max-width: 600px; /* Maximum width of the board */
+            max-height: 600px; /* Maximum height of the board */
             border: 2px solid black;
             background-color: #eee;
+            box-sizing: border-box; /* Include border and padding in the element's total width and height */
         }
         .cell {
             width: 100px;
