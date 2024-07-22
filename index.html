@@ -18,13 +18,14 @@
         }
         #game-board {
             position: relative;
-            width: 100vw; /* Full viewport width */
-            height: 100vh; /* Full viewport height */
+            width: 80vw; /* 80% of viewport width */
+            height: 80vw; /* 80% of viewport width to maintain a square aspect ratio */
             max-width: 600px; /* Maximum width of the board */
             max-height: 600px; /* Maximum height of the board */
             border: 2px solid black;
             background-color: #eee;
             box-sizing: border-box; /* Include border and padding in the element's total width and height */
+            overflow: hidden; /* Prevent scrollbars inside the board */
         }
         .cell {
             width: 100px;
