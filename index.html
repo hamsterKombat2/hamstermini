@@ -18,18 +18,18 @@
         }
         #game-board {
             position: relative;
-            width: 53.33vw; /* 2/3 of 80vw */
-            height: 53.33vw; /* 2/3 of 80vw */
-            max-width: 400px; /* 2/3 of 600px */
-            max-height: 400px; /* 2/3 of 600px */
+            width: 80vw; /* Responsive width */
+            height: 80vw; /* Responsive height to keep aspect ratio */
+            max-width: 400px; /* Maximum width */
+            max-height: 400px; /* Maximum height */
             border: 2px solid black;
             background-color: #eee;
             box-sizing: border-box; /* Include border and padding in the element's total width and height */
             overflow: hidden; /* Prevent scrollbars inside the board */
         }
         .cell {
-            width: 66.67px; /* 2/3 of 100px */
-            height: 66.67px; /* 2/3 of 100px */
+            width: 20%; /* Adjust cell size proportionally */
+            height: 20%; /* Adjust cell size proportionally */
             float: left;
             border: 1px solid #ccc;
             box-sizing: border-box;
@@ -59,7 +59,7 @@
         // Game variables
         const GRID_SIZE_X = 6;
         const GRID_SIZE_Y = 6;
-        const CELL_SIZE = 66.67; // 2/3 of 100px
+        const CELL_SIZE = 16.67; // Percentage based on 20% cell width/height
 
         let objects = [
             { id: 'object1', type: 'object', x: 1, y: 3, width: 1, height: 3, imageUrl: 'images/Rb.png', move: 'vertical' },
@@ -101,10 +101,10 @@
             const element = document.createElement('div');
             element.id = obj.id;
             element.className = obj.type; // Assign class for easier selection
-            element.style.left = `${obj.x * CELL_SIZE}px`;
-            element.style.top = `${obj.y * CELL_SIZE}px`;
-            element.style.width = `${obj.width * CELL_SIZE}px`;
-            element.style.height = `${obj.height * CELL_SIZE}px`;
+            element.style.left = `${obj.x * CELL_SIZE}%`;
+            element.style.top = `${obj.y * CELL_SIZE}%`;
+            element.style.width = `${obj.width * CELL_SIZE}%`;
+            element.style.height = `${obj.height * CELL_SIZE}%`;
             element.style.backgroundImage = `url('${obj.imageUrl}')`;
             element.style.backgroundSize = 'cover';
             element.style.position = 'absolute';
@@ -168,8 +168,8 @@
                 const deltaX = e.clientX - dragStartX;
                 const deltaY = e.clientY - dragStartY;
 
-                const moveX = Math.round(deltaX / CELL_SIZE);
-                const moveY = Math.round(deltaY / CELL_SIZE);
+                const moveX = Math.round(deltaX / (window.innerWidth * 0.8 / GRID_SIZE_X));
+                const moveY = Math.round(deltaY / (window.innerHeight * 0.8 / GRID_SIZE_Y));
 
                 let newX = initialX;
                 let newY = initialY;
@@ -200,8 +200,8 @@
                 const deltaX = e.touches[0].clientX - dragStartX;
                 const deltaY = e.touches[0].clientY - dragStartY;
 
-                const moveX = Math.round(deltaX / CELL_SIZE);
-                const moveY = Math.round(deltaY / CELL_SIZE);
+                const moveX = Math.round(deltaX / (window.innerWidth * 0.8 / GRID_SIZE_X));
+                const moveY = Math.round(deltaY / (window.innerHeight * 0.8 / GRID_SIZE_Y));
 
                 let newX = initialX;
                 let newY = initialY;
@@ -238,8 +238,8 @@
         function updateObjectPosition(obj) {
             const element = document.getElementById(obj.id);
             if (element) {
-                element.style.left = `${obj.x * CELL_SIZE}px`;
-                element.style.top = `${obj.y * CELL_SIZE}px`;
+                element.style.left = `${obj.x * CELL_SIZE}%`;
+                element.style.top = `${obj.y * CELL_SIZE}%`;
             }
         }
 
@@ -255,7 +255,7 @@
             messageBox.style.backgroundColor = 'white';
             messageBox.style.border = '2px solid black';
             messageBox.style.zIndex = 1000;
-            messageBox.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)'; // Optional shadow for better visibility
+            messageBox.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
 
             const messageText = document.createElement('p');
             messageText.textContent = 'Good Job!';
@@ -264,7 +264,6 @@
             const okButton = document.createElement('button');
             okButton.textContent = 'OK';
             okButton.onclick = () => {
-                console.log('OK button clicked'); // Debugging line
                 location.reload(); // Refresh the page
             };
             messageBox.appendChild(okButton);
