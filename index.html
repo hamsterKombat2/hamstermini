@@ -34,7 +34,7 @@
             box-sizing: border-box;
             /* No border or background for cells */
         }
-        .object, .key, .special, .rs {
+        .object, .key, .special, .rs, .gb {
             position: absolute;
             background-size: cover;
             cursor: grab;
@@ -62,19 +62,20 @@
         const CELL_SIZE = 16.67; // Percentage based on 20% cell width/height
 
         let objects = [
-             { id: 'object1', type: 'object', x: 5, y: 3, width: 1, height: 3, imageUrl: 'images/Rb.png', move: 'vertical' },
-            //{ id: 'object2', type: 'object', x: 5, y: 1, width: 1, height: 3, imageUrl: 'images/Rb.png', move: 'vertical' },
+             { id: 'object1', type: 'object', x: 0, y: 0, width: 1, height: 3, imageUrl: 'images/Rb.png', move: 'vertical' },
+            { id: 'object2', type: 'object', x: 4, y: 1, width: 1, height: 3, imageUrl: 'images/Rb.png', move: 'vertical' },
+            { id: 'gbObject1', type: 'gb', x: 0, y: 3, width: 3, height: 1, imageUrl: 'images/Gs.png', move: 'horizontal' },
             { id: 'specialObject1', type: 'special', x: 4, y: 0, width: 2, height: 1, imageUrl: 'images/Gs.png', move: 'horizontal' },
-            { id: 'specialObject2', type: 'special', x: 2, y: 1, width: 2, height: 1, imageUrl: 'images/Gs.png', move: 'horizontal' },
-            { id: 'specialObject3', type: 'special', x: 0, y: 3, width: 2, height: 1, imageUrl: 'images/Gs.png', move: 'horizontal' },
-            { id: 'specialObject4', type: 'special', x: 3, y: 3, width: 2, height: 1, imageUrl: 'images/Gs.png', move: 'horizontal' },
-            { id: 'specialObject5', type: 'special', x: 1, y: 4, width: 2, height: 1, imageUrl: 'images/Gs.png', move: 'horizontal' },
-            { id: 'keyObject', type: 'key', x: 0, y: 2, width: 2, height: 1, imageUrl: 'images/Key.png', move: 'horizontal' },
-            { id: 'rsObject1', type: 'rs', x: 1, y: 0, width: 1, height: 2, imageUrl: 'images/Rs.png', move: 'vertical' },
-            { id: 'rsObject2', type: 'rs', x: 4, y: 1, width: 1, height: 2, imageUrl: 'images/Rs.png', move: 'vertical' },
-            { id: 'rsObject3', type: 'rs', x: 2, y: 2, width: 1, height: 2, imageUrl: 'images/Rs.png', move: 'vertical' },
-            { id: 'rsObject4', type: 'rs', x: 0, y: 4, width: 1, height: 2, imageUrl: 'images/Rs.png', move: 'vertical' },
-            { id: 'rsObject5', type: 'rs', x: 3, y: 4, width: 1, height: 2, imageUrl: 'images/Rs.png', move: 'vertical' }
+            { id: 'specialObject2', type: 'special', x: 4, y: 4, width: 2, height: 1, imageUrl: 'images/Gs.png', move: 'horizontal' },
+            { id: 'specialObject3', type: 'special', x: 4, y: 5, width: 2, height: 1, imageUrl: 'images/Gs.png', move: 'horizontal' },
+            //{ id: 'specialObject4', type: 'special', x: 3, y: 3, width: 2, height: 1, imageUrl: 'images/Gs.png', move: 'horizontal' },
+            //{ id: 'specialObject5', type: 'special', x: 1, y: 4, width: 2, height: 1, imageUrl: 'images/Gs.png', move: 'horizontal' },
+            { id: 'keyObject', type: 'key', x: 2, y: 2, width: 2, height: 1, imageUrl: 'images/Key.png', move: 'horizontal' },
+            { id: 'rsObject1', type: 'rs', x: 3, y: 0, width: 1, height: 2, imageUrl: 'images/Rs.png', move: 'vertical' },
+            { id: 'rsObject2', type: 'rs', x: 1, y: 1, width: 1, height: 2, imageUrl: 'images/Rs.png', move: 'vertical' },
+            { id: 'rsObject3', type: 'rs', x: 5, y: 2, width: 1, height: 2, imageUrl: 'images/Rs.png', move: 'vertical' },
+            { id: 'rsObject4', type: 'rs', x: 2, y: 4, width: 1, height: 2, imageUrl: 'images/Rs.png', move: 'vertical' },
+            //{ id: 'rsObject5', type: 'rs', x: 3, y: 4, width: 1, height: 2, imageUrl: 'images/Rs.png', move: 'vertical' }
         ];
 
         let isDragging = false;
@@ -125,7 +126,7 @@
         document.addEventListener('touchmove', onTouchMove);
 
         function onMouseDown(e) {
-            if (['object', 'key', 'special', 'rs'].includes(e.target.className)) {
+            if (['object', 'key', 'special', 'rs', 'gb'].includes(e.target.className)) {
                 isDragging = true;
                 dragStartX = e.clientX;
                 dragStartY = e.clientY;
@@ -137,7 +138,7 @@
         }
 
         function onTouchStart(e) {
-            if (['object', 'key', 'special', 'rs'].includes(e.target.className)) {
+            if (['object', 'key', 'special', 'rs', 'gb'].includes(e.target.className)) {
                 isDragging = true;
                 dragStartX = e.touches[0].clientX;
                 dragStartY = e.touches[0].clientY;

@@ -51,3 +51,11 @@
     background-position: top left;
     cursor: grab;
 }
+.gb-object {
+    position: absolute;
+    width: 300px;
+    height: 100px;
+    background-size: cover;
+    background-position: top left;
+    cursor: grab;
+}
